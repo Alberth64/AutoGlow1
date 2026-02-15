@@ -4,19 +4,19 @@ import net.minecraft.util.Formatting;
 
 public class GlowColorManager {
 
-    private static Formatting currentColor = Formatting.AQUA;
-
     public static void setColor(Formatting color) {
-        currentColor = color;
+        GlowConfig.get().color = color;
+        GlowConfig.save();
     }
 
     public static Formatting getFormatting() {
-        return currentColor;
+        return GlowConfig.get().color;
     }
 
     public static int getColorValue() {
 
-        // Converte Formatting para RGB
+        Formatting currentColor = getFormatting();
+
         return switch (currentColor) {
             case BLACK -> 0x000000;
             case DARK_BLUE -> 0x0000AA;

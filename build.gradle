@@ -1,0 +1,29 @@
+plugins {
+    id 'net.fabricmc.fabric-loom-remap' version "${loom_version}"
+    id 'maven-publish'
+}
+
+group = 'com.autoglow'
+version = '1.0.5'
+
+repositories {
+    mavenCentral()
+    maven { url = 'https://repo.maven.apache.org/maven2' }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:1.21.10"
+    mappings "net.fabricmc:yarn:1.21.10+build.3:v2"
+    modImplementation "net.fabricmc:fabric-loader:0.18.4"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:0.138.4+1.21.10"
+}
+
+loom {
+    splitEnvironmentSourceSets()
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}

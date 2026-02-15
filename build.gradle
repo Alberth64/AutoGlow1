@@ -4,11 +4,11 @@ plugins {
 }
 
 group = 'com.autoglow'
-version = '1.0.5'
+version = '2.0.0'
 
 repositories {
     mavenCentral()
-    maven { url = 'https://repo.maven.apache.org/maven2' }
+    maven { url = 'https://maven.fabricmc.net/docs' }
 }
 
 dependencies {

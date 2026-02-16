@@ -1,6 +1,7 @@
 package com.autoglow.mixin;
 
 import com.autoglow.GlowColorManager;
+import com.autoglow.GlowConfig;
 import com.autoglow.GlowToggleManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ChatScreen;
@@ -24,6 +25,8 @@ public class ChatMixin {
         // ===== TOGGLE =====
         if (message.equalsIgnoreCase(".glow on")) {
             GlowToggleManager.setEnabled(true);
+            GlowConfig.get().enable = true;
+            GlowConfig.save();
             client.player.sendMessage(
                     Text.literal("Glow ativado!").formatted(Formatting.GREEN),
                     false
@@ -34,6 +37,8 @@ public class ChatMixin {
 
         if (message.equalsIgnoreCase(".glow off")) {
             GlowToggleManager.setEnabled(false);
+            GlowConfig.get().enable = false;
+            GlowConfig.save();
             client.player.sendMessage(
                     Text.literal("Glow desativado!").formatted(Formatting.RED),
                     false
@@ -56,6 +61,8 @@ public class ChatMixin {
                 if (input.startsWith("#")) {
                     try {
                         GlowColorManager.setHex(input);
+                        GlowConfig.get().color = GlowColorManager.getColorValue();
+                        GlowConfig.save();
                         client.player.sendMessage(
                                 Text.literal("Cor alterada para " + input)
                                         .formatted(Formatting.AQUA),
@@ -68,6 +75,8 @@ public class ChatMixin {
                 // Nome
                 else {
                     boolean success = GlowColorManager.setNamed(input);
+                    GlowConfig.get().color = GlowColorManager.getColorValue();
+                    GlowConfig.save();
                     if (success) {
                         client.player.sendMessage(
                                 Text.literal("Cor alterada para " + input)
@@ -88,7 +97,8 @@ public class ChatMixin {
                     int b = Integer.parseInt(args[3]);
 
                     GlowColorManager.setRGB(r, g, b);
-
+                    GlowConfig.get().color = GlowColorManager.getColorValue();
+                    GlowConfig.save();
                     client.player.sendMessage(
                             Text.literal("Cor alterada para RGB (" + r + ", " + g + ", " + b + ")")
                                     .formatted(Formatting.AQUA),

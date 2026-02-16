@@ -15,7 +15,7 @@ public class GlowConfig {
     private static final Path CONFIG_PATH =
             FabricLoader.getInstance().getConfigDir().resolve("autoglow.json");
 
-    public Formatting color = Formatting.AQUA;
+    public int color = 0x00FFFF; // padrão aqua
     public boolean enable = true;
 
     private static GlowConfig INSTANCE;
@@ -31,16 +31,32 @@ public class GlowConfig {
         try {
             if (Files.exists(CONFIG_PATH)) {
                 String json = Files.readString(CONFIG_PATH);
-                INSTANCE = GSON.fromJson(json, GlowConfig.class);
+
+                GlowConfig loaded = GSON.fromJson(json, GlowConfig.class);
+
+                // Evita null caso JSON esteja corrompido
+                if (loaded != null) {
+                    INSTANCE = loaded;
+                } else {
+                    System.out.println("[Glow] Config inválido, recriando...");
+                    INSTANCE = new GlowConfig();
+                    save();
+                }
+
             } else {
                 INSTANCE = new GlowConfig();
                 save();
             }
-        } catch (IOException e) {
+
+        } catch (Exception e) {
+            System.out.println("[Glow] Erro ao carregar config, recriando...");
             e.printStackTrace();
+
             INSTANCE = new GlowConfig();
+            save();
         }
     }
+
 
     public static void save() {
         try {

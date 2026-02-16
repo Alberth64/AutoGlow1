@@ -5,6 +5,7 @@ import com.autoglow.GlowToggleManager;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket;
 import net.minecraft.text.Text;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Formatting;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -20,14 +21,18 @@ public class ChatMixin {
         if (message.equalsIgnoreCase(".glow on")) {
 
             GlowToggleManager.setEnabled(true);
-            System.out.println("Glow ativado!");
+            MinecraftClient.getInstance().player
+                    .sendMessage(Text.literal("§aGlow ativado!"), false);
+
             ci.cancel();
         }
 
         if (message.equalsIgnoreCase(".glow off")) {
 
             GlowToggleManager.setEnabled(false);
-            System.out.println("Glow desativado!");
+            MinecraftClient.getInstance().player
+                    .sendMessage(Text.literal("§cGlow desativado!"), false);
+
             ci.cancel();
         }
 
@@ -38,7 +43,9 @@ public class ChatMixin {
             try {
                 Formatting color = Formatting.valueOf(colorName);
                 GlowColorManager.setColor(color);
-                System.out.println("Cor alterada para " + colorName);
+                MinecraftClient.getInstance().player
+                        .sendMessage(Text.literal("§bCor alterada para §f" + colorName), false);
+
 
             } catch (IllegalArgumentException e) {
                 System.out.println("Cor inválida.");

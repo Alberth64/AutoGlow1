@@ -2,56 +2,116 @@ package com.autoglow.mixin;
 
 import com.autoglow.GlowColorManager;
 import com.autoglow.GlowToggleManager;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket;
-import net.minecraft.text.Text;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.ChatScreen;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(ClientPlayNetworkHandler.class)
+@Mixin(ChatScreen.class)
 public class ChatMixin {
 
-    @Inject(method = "sendChatMessage", at = @At("HEAD"), cancellable = true)
-    private void interceptCommand(String message, CallbackInfo ci) {
+    @Inject(method = "sendMessage", at = @At("HEAD"), cancellable = true)
+    private void onSendMessage(String message, boolean addToHistory, CallbackInfo ci) {
 
+        MinecraftClient client = MinecraftClient.getInstance();
+
+        if (client.player == null) return;
+
+        // ===== TOGGLE =====
         if (message.equalsIgnoreCase(".glow on")) {
-
             GlowToggleManager.setEnabled(true);
-            MinecraftClient.getInstance().player
-                    .sendMessage(Text.literal("§aGlow ativado!"), false);
-
+            client.player.sendMessage(
+                    Text.literal("Glow ativado!").formatted(Formatting.GREEN),
+                    false
+            );
             ci.cancel();
+            return;
         }
 
         if (message.equalsIgnoreCase(".glow off")) {
-
             GlowToggleManager.setEnabled(false);
-            MinecraftClient.getInstance().player
-                    .sendMessage(Text.literal("§cGlow desativado!"), false);
-
+            client.player.sendMessage(
+                    Text.literal("Glow desativado!").formatted(Formatting.RED),
+                    false
+            );
             ci.cancel();
+            return;
         }
 
+        // ===== GLOWCOLOR =====
         if (message.startsWith(".glowcolor ")) {
 
-            String colorName = message.substring(11).toUpperCase();
+            String[] args = message.split(" ");
 
-            try {
-                Formatting color = Formatting.valueOf(colorName);
-                GlowColorManager.setColor(color);
-                MinecraftClient.getInstance().player
-                        .sendMessage(Text.literal("§bCor alterada para §f" + colorName), false);
+            // HEX ou Nome
+            if (args.length == 2) {
 
+                String input = args[1];
 
-            } catch (IllegalArgumentException e) {
-                System.out.println("Cor inválida.");
+                // HEX
+                if (input.startsWith("#")) {
+                    try {
+                        GlowColorManager.setHex(input);
+                        client.player.sendMessage(
+                                Text.literal("Cor alterada para " + input)
+                                        .formatted(Formatting.AQUA),
+                                false
+                        );
+                    } catch (Exception e) {
+                        sendError(client);
+                    }
+                }
+                // Nome
+                else {
+                    boolean success = GlowColorManager.setNamed(input);
+                    if (success) {
+                        client.player.sendMessage(
+                                Text.literal("Cor alterada para " + input)
+                                        .formatted(Formatting.AQUA),
+                                false
+                        );
+                    } else {
+                        sendError(client);
+                    }
+                }
+            }
+
+            // RGB
+            else if (args.length == 4) {
+                try {
+                    int r = Integer.parseInt(args[1]);
+                    int g = Integer.parseInt(args[2]);
+                    int b = Integer.parseInt(args[3]);
+
+                    GlowColorManager.setRGB(r, g, b);
+
+                    client.player.sendMessage(
+                            Text.literal("Cor alterada para RGB (" + r + ", " + g + ", " + b + ")")
+                                    .formatted(Formatting.AQUA),
+                            false
+                    );
+                } catch (NumberFormatException e) {
+                    sendError(client);
+                }
+            }
+
+            else {
+                sendError(client);
             }
 
             ci.cancel();
         }
+    }
+
+    private void sendError(MinecraftClient client) {
+        client.player.sendMessage(
+                Text.literal("Uso: .glowcolor <R G B | #HEX | nome>")
+                        .formatted(Formatting.RED),
+                false
+        );
     }
 }

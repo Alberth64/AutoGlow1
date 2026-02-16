@@ -8,6 +8,5 @@ public class AutoGlow implements ModInitializer {
     public void onInitialize() {
         System.out.println("AutoGlow carregado!");
         GlowConfig.load();
-        GlowColorCommand.register();
     }
 }

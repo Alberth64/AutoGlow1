@@ -1,6 +1,5 @@
 package com.autoglow.mixin;
 
-import com.autoglow.GlowColorCommand;
 import com.autoglow.GlowColorManager;
 import com.autoglow.GlowToggleManager;
 import net.minecraft.entity.Entity;

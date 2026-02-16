@@ -4,6 +4,17 @@ import net.minecraft.util.Formatting;
 
 public class GlowColorManager {
 
+    private static boolean enabled = true;
+
+    public static void setEnabled(boolean value) {
+        GlowConfig.get().enable = value;
+        GlowConfig.save();
+    }
+
+    public static boolean isEnabled() {
+        return GlowConfig.get().enable;
+    }
+
     public static void setColor(Formatting color) {
         GlowConfig.get().color = color;
         GlowConfig.save();

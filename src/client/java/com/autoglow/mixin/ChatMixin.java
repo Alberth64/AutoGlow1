@@ -1,6 +1,7 @@
 package com.autoglow.mixin;
 
 import com.autoglow.GlowColorManager;
+import com.autoglow.GlowToggleManager;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket;
 import net.minecraft.text.Text;
@@ -16,6 +17,20 @@ public class ChatMixin {
     @Inject(method = "sendChatMessage", at = @At("HEAD"), cancellable = true)
     private void interceptCommand(String message, CallbackInfo ci) {
 
+        if (message.equalsIgnoreCase(".glow on")) {
+
+            GlowToggleManager.setEnabled(true);
+            System.out.println("Glow ativado!");
+            ci.cancel();
+        }
+
+        if (message.equalsIgnoreCase(".glow off")) {
+
+            GlowToggleManager.setEnabled(false);
+            System.out.println("Glow desativado!");
+            ci.cancel();
+        }
+
         if (message.startsWith(".glowcolor ")) {
 
             String colorName = message.substring(11).toUpperCase();
@@ -23,14 +38,13 @@ public class ChatMixin {
             try {
                 Formatting color = Formatting.valueOf(colorName);
                 GlowColorManager.setColor(color);
-
-                System.out.println("Glow alterado para " + colorName);
+                System.out.println("Cor alterada para " + colorName);
 
             } catch (IllegalArgumentException e) {
                 System.out.println("Cor inválida.");
             }
 
-            ci.cancel(); // impede envio ao servidor
+            ci.cancel();
         }
     }
 }

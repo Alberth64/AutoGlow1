@@ -16,6 +16,7 @@ public class GlowConfig {
             FabricLoader.getInstance().getConfigDir().resolve("autoglow.json");
 
     public Formatting color = Formatting.AQUA;
+    public boolean enable = true;
 
     private static GlowConfig INSTANCE;
 

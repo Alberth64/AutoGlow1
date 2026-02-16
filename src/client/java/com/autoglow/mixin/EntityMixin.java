@@ -1,6 +1,8 @@
 package com.autoglow.mixin;
 
+import com.autoglow.GlowColorCommand;
 import com.autoglow.GlowColorManager;
+import com.autoglow.GlowToggleManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.client.MinecraftClient;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,7 +21,9 @@ public abstract class EntityMixin {
         if (client.player == null) return;
 
         if ((Object)this == client.player) {
-            // RGB: 0xRRGGBB
+
+            if (!GlowToggleManager.isEnabled()) return;
+
             cir.setReturnValue(GlowColorManager.getColorValue());
         }
     }

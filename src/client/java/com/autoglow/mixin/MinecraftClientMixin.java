@@ -4,6 +4,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
+import com.autoglow.GlowToggleManager;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -20,7 +21,7 @@ public abstract class MinecraftClientMixin {
 
         // Só aplica no próprio jogador
         if (entity == client.player) {
-            cir.setReturnValue(true);
+            cir.setReturnValue(GlowToggleManager.isEnabled());
         }
     }
 }

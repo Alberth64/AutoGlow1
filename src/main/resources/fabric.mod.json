@@ -17,6 +17,9 @@
 	"entrypoints": {
 		"main": [
 			"com.autoglow.AutoGlow"
+		],
+		"client": [
+			"com.autoglow.AutoGlowClient"
 		]
 	},
 		"mixins": [

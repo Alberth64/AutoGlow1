@@ -3,7 +3,7 @@
 	"id": "autoglow",
 	"version": "${version}",
 	"name": "autoglow",
-	"description": "Mod de Self Glow",
+	"description": "Self Glow",
 	"authors": [
 		"Alberth & ChatGPT"
 	],
